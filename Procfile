@@ -1,4 +1,1 @@
-// Procfile
-
-release: ENV_SILENT=true node ace migration:run --force
-web: ENV_SILENT=true npm startgit add --all
+web:node server.js
