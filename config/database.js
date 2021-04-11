@@ -50,15 +50,15 @@ module.exports = {
   */
   mysql: {
     client: 'mysql',
-    connection: Env.get('DATABASE_URL', 'localhost'),
-    /*connection: {
+    //connection: Env.get('DATABASE_URL', 'localhost'),
+    connection: {
       host: Env.get('DB_HOST', 'localhost'),
       port: Env.get('DB_PORT', ''),
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
       database: Env.get('DB_DATABASE', 'adonis'),
       ssl: true
-    },*/
+    },
     debug: Env.get('DB_DEBUG', false)
   },
 
@@ -74,12 +74,14 @@ module.exports = {
   */
   pg: {
     client: 'pg',
+    //connection: Env.get('DATABASE_URL', 'localhost'),
     connection: {
       host: Env.get('DB_HOST', 'localhost'),
       port: Env.get('DB_PORT', ''),
       user: Env.get('DB_USER', 'root'),
       password: Env.get('DB_PASSWORD', ''),
-      database: Env.get('DB_DATABASE', 'adonis')
+      database: Env.get('DB_DATABASE', 'adonis'),
+      ssl: true
     },
     debug: Env.get('DB_DEBUG', false)
   }
