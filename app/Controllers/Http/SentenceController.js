@@ -76,6 +76,7 @@ class SentenceController {
       .raw(`
         SELECT *
         FROM sentences
+        WHERE eligible
         ORDER BY random()
         LIMIT 1;
       `)
