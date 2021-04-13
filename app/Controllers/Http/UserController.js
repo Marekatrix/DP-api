@@ -48,6 +48,7 @@ class UserController {
     let users = await Database
       .raw(`
         SELECT username, score FROM users
+        WHERE score IS NOT NULL
         ORDER BY score DESC
       `)
 

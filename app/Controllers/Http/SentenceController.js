@@ -14,6 +14,28 @@ class SentenceController {
     })
   }
 
+  async getSentenceWithDict({ response, params }) {
+    const sentence = (await Sentence.find(params.sentence_id))
+    const text = sentence.text.toLowerCase()
+
+    const foundWords = Object.keys(dictionary).reduce((words, word) => {
+      if (text.includes(word)) words.push(word)
+      return words
+    }, [])
+
+    const matchedDictionary = foundWords.reduce((dict, word) => {
+      return { ...dict, [word]: dictionary[word] }
+    }, {})
+
+    return response.json({
+      sentence: {
+        id: sentence.id,
+        text: text
+      },
+      dictionary: matchedDictionary
+    })
+  }
+
   async getRandomSentence({ request, response }) {
     const query = request.get()
     const idsString = query.forbiddenIds 
@@ -39,23 +61,6 @@ class SentenceController {
         LIMIT 1
       `)
 
-      /*
-              
-        SELECT X.text, X.snt_id as id FROM (
-          SELECT COUNT(answ.sentence_id) as ans_count, snt.text, snt.id as snt_id FROM (
-            SELECT *
-            FROM sentences
-            ${idsString ? `EXCEPT SELECT * FROM sentences WHERE id IN ${idsString}` : ''}
-          ) as snt
-          LEFT JOIN answers AS answ ON snt.id = answ.sentence_id
-          GROUP BY answ.sentence_id, snt.text, snt.id
-          ORDER BY ans_count ASC
-          LIMIT 10
-        ) as X
-        ORDER BY random()
-        LIMIT 1;
-      */
-
     // if all sentences were used, ignore exception
     if (!randomSentence.rows.length) {
       randomSentence = (await Database
@@ -80,10 +85,11 @@ class SentenceController {
         ORDER BY random()
         LIMIT 1;
       `)
-    ).rows[0].text.toLowerCase()
+    ).rows[0]
+    const text = sentence.text.toLowerCase()
 
     const foundWords = Object.keys(dictionary).reduce((words, word) => {
-      if (sentence.includes(word)) words.push(word)
+      if (text.includes(word)) words.push(word)
       return words
     }, [])
 
@@ -92,7 +98,10 @@ class SentenceController {
     }, {})
 
     return response.json({
-      sentence: sentence,
+      sentence: {
+        id: sentence.id,
+        text: text
+      },
       dictionary: matchedDictionary
     })
   }

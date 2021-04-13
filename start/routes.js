@@ -29,6 +29,7 @@ Route.post('login', 'UserController.login')
 
 // sentence routes
 Route.post('sentence', 'SentenceController.create')
+Route.get('sentence-with-dict/:sentence_id', 'SentenceController.getSentenceWithDict')
 Route.post('sentence/:sentence_id/answer', 'AnswerController.create')
 Route.get('sentence/:sentence_id', 'SentenceController.show')
 Route.get('random-sentence', 'SentenceController.getRandomSentence')
