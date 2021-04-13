@@ -74,7 +74,7 @@ module.exports = {
   */
   pg: {
     client: 'pg',
-    connection: Env.get('DATABASE_URL', 'localhost'),
+    connection: Env.get('DATABASE_URL', 'localhost') + '?ssl=no-verify',
     /*connection: {
       host: Env.get('DB_HOST', 'localhost'),
       port: Env.get('DB_PORT', ''),
