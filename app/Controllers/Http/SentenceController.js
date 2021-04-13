@@ -117,7 +117,11 @@ class SentenceController {
     }
 
     const sentenceData = request.only(['text', 'eligible'])
-    const sentence = await Database.table('sentences').where('text', sentenceData.text)
+    const sentence = await Database.raw(`
+      SELECT * FROM sentences
+      WHERE LOWER(text)=LOWER('&{sentenceData.text}')
+    `)
+    
 
     if (sentence.length) {
       return response.status(422).json({
