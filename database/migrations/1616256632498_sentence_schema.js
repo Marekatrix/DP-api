@@ -11,6 +11,8 @@ class SentenceSchema extends Schema {
 
       table.text('text').notNullable()
       table.boolean('eligible').nullable()
+      table.decimal('correct_result_clickbait').nullable()
+      table.boolean('credibility_is_known_answer').nullable()
       table.integer('user_id').references('id').inTable('users')
     })
   }

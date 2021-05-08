@@ -72,6 +72,13 @@ class UserController {
 
     const user = await auth.getUser()
 
+    if (user.score >= score) {
+      return response.json({
+        status: 'success',
+        data: user
+      })
+    }
+
     await Database
       .table('users')
       .where('id', user.id)

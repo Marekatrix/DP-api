@@ -30,7 +30,9 @@ class SentenceController {
     return response.json({
       sentence: {
         id: sentence.id,
-        text: text
+        text: text,
+        correct_result_clickbait: sentence.correct_result_clickbait,
+        credibility_is_known_answer: sentence.credibility_is_known_answer
       },
       dictionary: matchedDictionary
     })
@@ -45,13 +47,14 @@ class SentenceController {
     let randomSentence = await Database
       .raw(`
         SELECT * FROM (
-          SELECT X.text, X.snt_id as id, X.ans_count as count FROM (
-            SELECT COUNT(answ.sentence_id) as ans_count, snt.text, snt.id as snt_id FROM (
+          SELECT X.text, X.snt_id as id, X.ans_count as count, X.credibility_is_known_answer, X.correct_result_clickbait FROM (
+            SELECT COUNT(answ.sentence_id) as ans_count, snt.text, snt.id as snt_id, snt.credibility_is_known_answer, snt.correct_result_clickbait FROM (
               SELECT * FROM sentences
               ${idsString ? `EXCEPT SELECT * FROM sentences WHERE id IN ${idsString}` : ''}
+              EXCEPT SELECT * FROM sentences WHERE credibility_is_known_answer IS ${query.evaluated == 'true' ? '' : 'NOT'} NULL AND correct_result_clickbait IS ${query.evaluated == 'true' ? '' : 'NOT'} NULL
             ) as snt
             LEFT JOIN answers AS answ ON snt.id = answ.sentence_id
-            GROUP BY answ.sentence_id, snt.text, snt.id
+            GROUP BY answ.sentence_id, snt.text, snt.id, snt.credibility_is_known_answer, snt.correct_result_clickbait
             ORDER BY ans_count DESC
           ) as X
           WHERE X.ans_count < 5
@@ -67,6 +70,7 @@ class SentenceController {
         .raw(`
           SELECT *
           FROM sentences
+          WHERE credibility_is_known_answer IS ${query.evaluated == 'true' ? 'NOT' : ''} NULL AND correct_result_clickbait IS ${query.evaluated == 'true' ? 'NOT' : ''} NULL ${idsString ? `AND id NOT IN ${idsString}` : ''}
           ORDER BY random()
           LIMIT 1;
         `)
@@ -100,7 +104,9 @@ class SentenceController {
     return response.json({
       sentence: {
         id: sentence.id,
-        text: text
+        text: text,
+        correct_result_clickbait: sentence.correct_result_clickbait,
+        credibility_is_known_answer: sentence.credibility_is_known_answer
       },
       dictionary: matchedDictionary
     })
