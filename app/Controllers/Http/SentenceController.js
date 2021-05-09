@@ -70,7 +70,6 @@ class SentenceController {
         .raw(`
           SELECT *
           FROM sentences
-          WHERE credibility_is_known_answer IS ${query.evaluated == 'true' ? 'NOT' : ''} NULL AND correct_result_clickbait IS ${query.evaluated == 'true' ? 'NOT' : ''} NULL ${idsString ? `AND id NOT IN ${idsString}` : ''}
           ORDER BY random()
           LIMIT 1;
         `)
